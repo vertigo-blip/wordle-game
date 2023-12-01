@@ -1,0 +1,50 @@
+// int(main) still needs color in case 2, play logic still needs to give feedback on users choices
+
+int main() {
+    vector<GameRecord> gameRecords;
+    loadStatsFromFile(gameRecords, "statistics.txt");
+
+    vector<string> allowedWords = readWordList(ALLOWED_WORDS_FILE);
+
+    while (true){
+        cout << "=========================\n";
+        cout << "    WELCOME TO WORDLE\n";
+        cout << "=========================\n\n";
+        cout << "1. Play Wordle\n";
+        cout << "2. How to Play\n";
+        cout << "3. Statistics Summary\n";
+        cout << "4. Reset Statistics\n";
+        cout << "5. Exit\n\n";
+        cout << "Select an option: ";
+    
+        int option;
+        cin >> option;
+
+        switch (option){
+            case 1:
+                playWordle(gameRecords);
+                break;
+            case 2:
+                displayHowToPlay();
+                break;
+            case 3:
+                displayStatsSummary(gameRecords);
+                break;
+            case 4:
+                // reset stats
+                gameRecords.clear();
+                cout << "Statistics have been reset.\n";
+                break;
+            case 5:
+                // save stats before exit
+                saveStatsToFile(gameRecords, "statistics.txt");
+                cout << "Exiting the program. \n";
+                return 0;
+        default:
+            // invalid
+            cout << "Invalid option. Please select a valid option. \n";
+            break;
+        }
+    }
+    return 0;
+}
