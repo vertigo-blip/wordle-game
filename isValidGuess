@@ -1,0 +1,22 @@
+// created function to determine if the user's guess is a 5 letter word and in allowed.txt
+
+bool isValidGuess(const string& guess, const vector<string>& allowedWords){
+    if (guess.length() != 5){
+        cout << "Invalid guess. Please enter a 5 letter word.";
+    }
+
+    ifstream file(ALLOWED_WORDS_FILE);
+
+    string word;
+
+    while (file >> word){
+        if (word == guess){
+            file.close();
+            return true;
+        }
+    }
+
+    file.close();
+    cout << "The word ' " << guess << " ' is not allowed." << endl;
+    return false;
+}
