@@ -15,7 +15,9 @@ vector<string> readWordList(const string& filename){
     file.close();
     return wordList;
 }
+
 // function to select random word from vector
+
 string getRandomWord(const vector<string>& wordList){
     srand(time(0));
     int randomIndex = rand() % wordList.size(); // get random index within word list
