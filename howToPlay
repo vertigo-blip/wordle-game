@@ -1,0 +1,28 @@
+// created a how to play function that displays instructions on how to play the game
+// still need to add colors
+
+void displayHowToPlay(){
+    cout << "=============================================\n";
+    cout << "                 HOW TO PLAY\n";
+    cout << "=============================================\n";
+    cout << "Guess the Wordle in 6 tries.\n\n";
+    cout << "HOW TO PLAY:\n";
+    cout << "- Each guess must be a valid 5 letter word.\n";
+    cout << "- The color of the tiles will change to show\n";
+    cout << "  you how close your guess was to the word.\n\n";
+    cout << " --- --- --- --- ---\n";
+    cout << "| W | | E || A || R || Y |\n";
+    cout << " --- --- --- --- ---\n";
+    cout << "W is in the word and in the correct spot.\n\n"; //(make the 'W' and dashes around it green)
+    cout << " --- --- --- --- --- ---\n";
+    cout << "| P || I || L || L || S |\n";
+    cout << "--- --- --- --- --- ---\n";
+    cout << "I is in the word but in the wrong spot.\n\n"; // (make the 'I' and dashes around it yellow)
+    cout << "--- --- --- --- --- --- ---\n";
+    cout << "| V || A || G || U || E |\n";
+    cout << "--- --- --- --- --- --- ---\n";
+    cout << "U is not in the word in any spot.\n\n"; // (make the 'U' and dashes around it a dark gray)
+    cout << "\nPress [enter] to continue";
+    cin.ignore();
+    cin.get();
+}
