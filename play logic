@@ -1,0 +1,46 @@
+// play logic for wordle. Still need to implement feedback based on users choices.
+
+void playWordle(vector<GameRecord>& records){
+    const int maxTries = 6;
+    int tries = 0;
+
+    srand(static_cast<unsigned int>(time(nullptr)));
+
+    vector<string> wordList;
+    ifstream allowedWords(ALLOWED_WORDS_FILE);
+    string word;
+    while (allowedWords >> word){
+    wordList.push_back(word);
+    }
+
+    allowedWords.close();
+    
+    string secretWord = wordList[rand() % wordList.size()];
+
+    string guess;
+    
+    while (tries < maxTries){
+        cout << "Enter your guess (5 letters): ";
+        cin >> guess;
+
+        if (isValidGuess(guess, wordList)){
+            // provideFeedback
+            printBoard(guess, secretWord);
+    
+                if (isGameOver(guess, secretWord)){
+                    cout << "Congratulations! You guessed the word.\n";
+                    records.push_back({secretWord, tries + 1, true});
+                    break;
+        }
+        ++tries;
+    } else {
+        // if not valid do not increment tries
+    }
+    }
+
+    if (tries == maxTries){
+        cout << "Sorry, you ran out of tries. The word was: " << secretWord << "\n";
+        records.push_back({secretWord, maxTries, false});
+
+    }
+}
