@@ -1,0 +1,39 @@
+// created functions to save stats from current game and to load stats from previous games as well as resetting stats (put in int(main))
+
+void saveStatsToFile(const vector<GameRecord>& records, const string& filename){
+    ofstream file(filename);
+
+    for (const auto& record : records){
+        file << record.word << " " << record.attempts << " " << record.win << "\n";
+    }
+}
+
+void loadStatsFromFile(vector<GameRecord>& records, const string& filename){
+    ifstream file(filename);
+
+    if (file.is_open()){
+        records.clear();
+
+        string word;
+        int attempts;
+        bool win;
+
+        while (file >> word >> attempts >> win){
+            records.push_back({word, attempts, win});
+        }
+        file.close();
+    }
+}
+
+struct GameRecord{
+    string word;
+    int attempts;
+    bool win;
+};
+
+
+case 4:
+                // reset stats
+                gameRecords.clear();
+                cout << "Statistics have been reset.\n";
+                break;
