@@ -1,0 +1,43 @@
+// Created stats summary function and added functionality for recording wins, times played, etc.
+
+void displayStatsSummary(const vector<GameRecord>& records){
+    int timesPlayed = records.size();
+    int totalAttempts = 0;
+    int wins = 0;
+    int currentStreak = 0;
+    int longestStreak = 0;
+
+    for (const auto& record : records){
+        totalAttempts += record.attempts;
+        if (record.win){
+            wins++;
+            currentStreak++;
+        } else{
+            currentStreak = 0;
+        }
+        longestStreak = max(longestStreak, currentStreak);
+    }
+    double winPercentage = (timesPlayed > 0) ? (static_cast<double>(wins) / timesPlayed) * 100.0 : 0.0;
+    double averageAttempts = (timesPlayed > 0) ? static_cast<double>(totalAttempts) / timesPlayed : 0.0;
+
+    cout << "==========================\n";
+    cout << "    STATISTICS SUMMARY\n";
+    cout << "==========================\n";
+    cout << "Times Played:        " << timesPlayed << "\n";
+    cout << "Average Attempts:    " << averageAttempts << "\n";
+    cout << "Win Percentage:      " << winPercentage << "%\n";
+    cout << "Current Streak:      " << currentStreak << "\n";
+    cout << "Longest Streak:      " << longestStreak << "\n\n";
+
+    cout << "--------------------------\n";
+    cout << "WORD     ATTEMPTS      WIN\n";
+    cout << "--------------------------\n";
+
+    for (const auto& record : records){
+        cout << setw(8) << record.word << setw(10) << record.attempts;
+        cout << setw(8) << (record.win ? "Yes" : "No") << "\n";
+    }
+    cout << "\nPress [enter] to continue";
+    cin.ignore();
+    cin.get();
+}
