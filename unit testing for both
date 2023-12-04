@@ -1,0 +1,142 @@
+// for the wordle logic
+#include <igloo/igloo.h>
+#include "WordleFunctions.h"
+using namespace igloo;
+
+Context(TODO){
+    
+    It(should_read_word_list){
+        vector<string> wordList = readWordList("words.txt");
+        Assert:That(wordList.size(), Equals(3));
+        Assert::That(wordList[0], Equals("aback"));
+        Assert::That(wordList[1], Equals("abase"));
+        Assert::That(wordList[2], Equals("abate"));
+    }
+
+    It(should_get_random_word){
+        vector<string> words = "words1", "words2", "words3";
+        string randomWord = getRandomWord(words);
+        Assert::That(find(words.begin(), words(end), randomWord), Is().not().EqualTo(words.end()));
+    }
+    It(should_check_if_game_over) {
+        Assert::That(isGameOver("apple", "apple"), Is().True());
+        Assert::That(isGameOver("orange", "apple"), Is().False());
+    }
+
+    It(should_check_if_guess_is_valid) {
+        vector<string> allowedWords = {"apple", "banana", "orange"};
+        Assert::That(isValidGuess("apple", allowedWords), Is().True());
+        Assert::That(isValidGuess("grape", allowedWords), Is().False());
+    }
+
+    It(should_display_current_state) {
+        // Redirect cout to a stringstream for testing output
+        stringstream output;
+        streambuf* coutBuffer = cout.rdbuf();
+        cout.rdbuf(output.rdbuf());
+
+        displayCurrentState("apple", "apple");
+
+        // Reset cout
+        cout.rdbuf(coutBuffer);
+
+        // Perform assertions on the output
+        Assert::That(output.str(), Contains("W is in the word and in the correct spot."));
+    }
+
+    It(should_get_guess_from_user) {
+        // For simplicity, just checking if it doesn't crash
+        Assert::That([&]() { getGuess(); }, ThrowsAnyException());
+    }
+
+    It(should_play_wordle_game) {
+        vector<GameRecord> records;
+        Assert::That([&]() { playWordle(records); }, ThrowsAnyException());
+    }
+
+    It(should_display_statistics_summary) {
+        stringstream output;
+        streambuf* coutBuffer = cout.rdbuf();
+        cout.rdbuf(output.rdbuf());
+
+        vector<GameRecord> records = {{"apple", 3, true}, {"banana", 4, false}};
+        displayStatsSummary(records);
+
+        cout.rdbuf(coutBuffer);
+
+        Assert::That(output.str(), Contains("STATISTICS SUMMARY"));
+        Assert::That(output.str(), Contains("Average Attempts"));
+    }
+
+    It(should_save_and_load_stats_to_and_from_file) {
+        vector<GameRecord> records = {{"apple", 3, true}, {"banana", 4, false}};
+
+        // Save to file
+        saveStatsToFile(records, "test_stats.txt");
+
+        // Load from file
+        vector<GameRecord> loadedRecords;
+        loadStatsFromFile(loadedRecords, "test_stats.txt");
+
+        Assert::That(records, Is().EqualTo(loadedRecords));
+    }
+    It(should_display_how_to_play) {
+        
+        stringstream output;
+        streambuf* coutBuffer = cout.rdbuf();
+        cout.rdbuf(output.rdbuf());
+
+        displayHowToPlay();
+
+        cout.rdbuf(coutBuffer);
+
+        Assert::That(output.str(), Contains("HOW TO PLAY"));
+        Assert::That(output.str(), Contains("W is in the word and in the correct spot."));
+    }
+}
+
+int main(){
+    return TestRunner::RunAllTests();
+}
+
+
+
+
+// for the virtual keyboard
+#include <igloo/igloo.h>
+#include "virtualKeyboard.h"
+using namespace igloo;
+
+Context(TODO){
+    Spec(InitializeVirtualKeyboard) {
+        VirtualKeyboard keyboard;
+        Assert::That(keyboard.isLetterGuessed('A'), Is().EqualTo(false));
+        Assert::That(keyboard.isLetterGuessed('Z'), Is().EqualTo(false));
+        Assert::That(keyboard.isLetterGuessed('a'), Is().EqualTo(false));
+        Assert::That(keyboard.isLetterGuessed(' '), Is().EqualTo(false));
+    }
+
+    Spec(MarkAndDisplayGuessedLetter) {
+        VirtualKeyboard keyboard;
+        keyboard.markGuessed('A', true, false);
+        keyboard.markGuessed('E', false, true);
+
+        stringstream output;
+        streambuf* coutBuffer = cout.rdbuf();
+        cout.rdbuf(output.rdbuf());
+
+        keyboard.displayKeyboard();
+
+        cout.rdbuf(coutBuffer);
+
+        string expectedOutput =
+            " A  B  C  D     E  F  G  H  I  J  K  L  M\n"
+            " \033[32m[A]\033[0m  \033[90mB\033[0m  \033[90mC\033[0m  \033[90mD\033[0m     \033[33m[E]\033[0m  \033[90mF\033[0m  \033[90mG\033[0m  \033[90mH\033[0m  \033[90mI\033[0m  \033[90mJ\033[0m  \033[90mK\033[0m  \033[90mL\033[0m  \033[90mM\033[0m\n";
+
+        Assert::That(output.str(), Is().EqualTo(expectedOutput));
+    }
+};
+
+int main(){
+    return TestRunner::RunAllTests();
+}
