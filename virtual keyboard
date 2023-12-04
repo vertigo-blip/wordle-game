@@ -1,0 +1,86 @@
+// wasnt able to get it fully working
+
+#ifndef VirtualKeyboard_h
+#define VirtualKeyboard_h
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class VirtualKeyboard{
+    public:
+        VirtualKeyboard() noexcept;
+        void displayKeyboard() const;
+        void markGuessed(char letter, bool correctSpot, bool correctCharacter);
+        bool isLetterGuessed(char letter) const;
+
+    private:
+    vector<char> guessedLetters;
+    vector<vector<string>> keyColors;
+    static const int rows = 5;
+    static const int cols = 14;
+    char keyboard[rows][cols];
+    
+    void initializeKeyboard();
+};
+
+
+void VirtualKeyboard::initializeKeyboard() {
+    // Initialize the keyboard layout
+    char currentLetter = 'A';
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            if ((i == 1 && j == 1) || (i == 1 && j == 3) || (i == 1 && j == 13)) {
+                keyboard[i][j] = ' ';  // Skip spaces for Q, W, and P keys
+            } else if (currentLetter <= 'Z') {
+                keyboard[i][j] = currentLetter++;
+            } else {
+                keyboard[i][j] = ' ';  // Skip spaces for non-alphabetic keys
+            }
+        }
+    }
+
+    // Initialize key colors
+    keyColors = std::vector<std::vector<std::string>>(rows, std::vector<std::string>(cols, "\033[0m"));  // Default: Reset color
+}
+
+void VirtualKeyboard::displayKeyboard() const {
+    // Display the keyboard with guessed letters marked
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            std::cout << keyColors[i][j];
+            char displayChar = keyboard[i][j];
+            if (isLetterGuessed(displayChar)) {
+                std::cout << "[" << displayChar << "]";
+            } else {
+                std::cout << " " << displayChar << " ";
+            }
+            std::cout << "\033[0m";  // Reset color
+        }
+        std::cout << std::endl;
+    }
+}
+
+void VirtualKeyboard::markGuessed(char letter, bool correctSpot, bool correctCharacter) {
+    // Mark the guessed letter with the appropriate color
+    guessedLetters.push_back(letter);
+    int colorIndex = guessedLetters.size() - 1;
+
+    if (correctSpot) {
+        keyColors[colorIndex / cols][colorIndex % cols] = "\033[32m";  // Green for correct spot
+    } else if (correctCharacter) {
+        keyColors[colorIndex / cols][colorIndex % cols] = "\033[33m";  // Yellow for correct character in the wrong spot
+    } else {
+        keyColors[colorIndex / cols][colorIndex % cols] = "\033[90m";  // Gray for character not in the word
+    }
+}
+
+bool VirtualKeyboard::isLetterGuessed(char letter) const {
+    // Check if the letter has been guessed
+    return std::find(guessedLetters.begin(), guessedLetters.end(), letter) != guessedLetters.end();
+}
+
+
+#endif
