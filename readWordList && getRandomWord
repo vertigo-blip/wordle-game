@@ -19,7 +19,29 @@ vector<string> readWordList(const string& filename){
 // function to select random word from vector
 
 string getRandomWord(const vector<string>& wordList){
-    srand(time(0));
-    int randomIndex = rand() % wordList.size(); // get random index within word list
+   srand(static_cast<unsigned int>(time(nullptr)));
+
+    vector<string> wordList;
+    ifstream wordsFile(WORDS_FILE);
+
+    if (!wordsFile.is_open()){
+        cerr << "Error openeing the words file." << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    string word;
+    while (wordsFile >> word){
+        wordList.push_back(word);
+    }
+
+    wordsFile.close();
+
+    if (wordList.empty()){
+        cerr << "Error: Empty words file." << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    int randomIndex = rand() % wordList.size();
     return wordList[randomIndex];
+
 }
